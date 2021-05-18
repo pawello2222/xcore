@@ -92,15 +92,20 @@ extension View {
 // MARK: - Colors
 
 extension View {
-    /// Sets the color that the view uses for foreground elements.
-    public func foregroundColor(_ color: UIColor) -> some View {
-        foregroundColor(Color(color))
+    /// Sets the UIColor that the view uses for foreground elements.
+    public func foregroundUIColor(_ uiColor: UIColor) -> some View {
+        foregroundColor(Color(uiColor))
+    }
+
+    /// Sets the background UIColor behind this view.
+    public func backgroundUIColor(_ uiColor: UIColor, edgesIgnoringSafeArea: Edge.Set = .all) -> some View {
+        backgroundColor(Color(uiColor), edgesIgnoringSafeArea: edgesIgnoringSafeArea)
     }
 
     /// Sets the background color behind this view.
-    public func backgroundColor(_ color: UIColor, edgesIgnoringSafeArea: Edge.Set = .all) -> some View {
+    public func backgroundColor(_ color: Color, edgesIgnoringSafeArea: Edge.Set = .all) -> some View {
         background(
-            Color(color)
+            color
                 .edgesIgnoringSafeArea(edgesIgnoringSafeArea)
         )
     }
