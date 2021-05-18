@@ -6,7 +6,6 @@
 
 import XCTest
 import UIKit
-@testable import Example
 
 class TestCase: XCTestCase {
     let application = XCUIApplication()
