@@ -133,15 +133,15 @@ extension Configuration where Type: UIButton {
     }
 
     public static var dismiss: Self {
-        image(assetIdentifier: .closeIcon, size: 24, axis: .horizontal, .vertical)
+        image(assetIdentifier: .closeIcon, size: .init(24), axis: .horizontal, .vertical)
     }
 
     public static var dismissFilled: Self {
-        image(assetIdentifier: .closeIconFilled, size: 24, axis: .horizontal, .vertical)
+        image(assetIdentifier: .closeIconFilled, size: .init(24), axis: .horizontal, .vertical)
     }
 
     public static var searchIcon: Self {
-        image(assetIdentifier: .searchIcon, size: 14, axis: .horizontal)
+        image(assetIdentifier: .searchIcon, size: .init(14), axis: .horizontal)
     }
 
     public static func image(
