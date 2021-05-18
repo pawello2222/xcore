@@ -6,6 +6,8 @@
 
 // MARK: - Bundle
 
+@_exported import UIKit
+
 private class XcoreMarker { }
 extension Bundle {
     public static var xcore: Bundle {
