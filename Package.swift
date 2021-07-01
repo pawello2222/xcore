@@ -5,17 +5,24 @@ import PackageDescription
 let package = Package(
     name: "Xcore",
     defaultLocalization: "en",
-    platforms: [.iOS(.v13), .macOS(.v10_11)],
+    platforms: [.iOS(.v14), .macOS(.v11)],
     products: [
         .library(name: "Xcore", targets: ["Xcore"])
     ],
     dependencies: [
-        .package(url: "https://github.com/SDWebImage/SDWebImage.git", from: "5.9.1")
+        .package(url: "https://github.com/SDWebImage/SDWebImage", from: "5.9.1")
     ],
     targets: [
-        .target(name: "Xcore", dependencies: ["SDWebImage"], path: "Sources", exclude: ["Supporting Files/Info.plist"]),
-        .testTarget(name: "UITests", dependencies: ["Xcore"], path: "UITests", exclude: ["Supporting Files/Info.plist"]),
-        .testTarget(name: "UnitTests", dependencies: ["Xcore"], path: "UnitTests", exclude: ["Supporting Files/Info.plist"])
-    ],
-    swiftLanguageVersions: [.v5]
+        .target(
+            name: "Xcore",
+            dependencies: ["SDWebImage"],
+            path: "Sources",
+            exclude: ["Supporting Files/Info.plist"],
+            resources: [
+                .process("Supporting Files/Assets.xcassets")
+            ]
+        )
+    ]
 )
+
+// .testTarget(name: "UnitTests", dependencies: ["Xcore"], path: "UnitTests")

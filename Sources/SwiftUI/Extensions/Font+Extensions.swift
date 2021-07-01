@@ -16,35 +16,30 @@ extension Font {
     ///   - trait: The trait of the font. The default value is `.normal`.
     /// - Returns: The new scaled font object.
     public static func app(
-        _ style: UIFont.TextStyle,
-        weight: UIFont.Weight = .regular,
+        _ style: TextStyle,
+        weight: Weight = .regular,
         trait: UIFont.Trait = .normal
     ) -> Font {
-        let typeface = UIFont.defaultAppTypeface.name(weight: weight, trait: trait)
+        let typeface = UIFont.defaultAppTypeface.name(weight: .init(weight), trait: trait)
 
-        guard typeface != UIFont.Typeface.systemFontId else {
-            return system(
-                TextStyle(style),
+        if typeface == UIFont.Typeface.systemFontId {
+            var font = system(
+                style,
                 design: trait == .monospaced ? .monospaced : .default
-            )
+            ).weight(weight)
+
+            if trait == .italic {
+                font = font.italic()
+            }
+
+            return font
         }
 
         let pointSize = UIFontDescriptor.preferredFontDescriptor(
-            withTextStyle: style
+            withTextStyle: .init(style)
         ).pointSize
 
-        if #available(iOS 14.0, *) {
-            return .custom(
-                typeface,
-                size: pointSize,
-                relativeTo: TextStyle(style)
-            )
-        }
-
-        return .custom(
-            typeface,
-            size: UIFontMetrics.default.scaledValue(for: pointSize)
-        )
+        return .custom(typeface, size: pointSize, relativeTo: style)
     }
 
     /// Returns default app font with given `size`.
@@ -56,17 +51,23 @@ extension Font {
     /// - Returns: The new font object.
     public static func app(
         size: CGFloat,
-        weight: UIFont.Weight = .regular,
+        weight: Weight = .regular,
         trait: UIFont.Trait = .normal
     ) -> Font {
-        let typeface = UIFont.defaultAppTypeface.name(weight: weight, trait: trait)
+        let typeface = UIFont.defaultAppTypeface.name(weight: .init(weight), trait: trait)
 
         if typeface == UIFont.Typeface.systemFontId {
-            return system(
+            var font = system(
                 size: size,
-                weight: Weight(weight),
+                weight: weight,
                 design: trait == .monospaced ? .monospaced : .default
             )
+
+            if trait == .italic {
+                font = font.italic()
+            }
+
+            return font
         }
 
         return custom(typeface, size: size)
@@ -75,8 +76,8 @@ extension Font {
 
 // MARK: - Helpers
 
-extension Font.Weight {
-    fileprivate init(_ weight: UIFont.Weight) {
+extension UIFont.Weight {
+    init(_ weight: Font.Weight) {
         switch weight {
             case .ultraLight:
                 self = .ultraLight
@@ -102,25 +103,17 @@ extension Font.Weight {
     }
 }
 
-extension Font.TextStyle {
-    fileprivate init(_ textStyle: UIFont.TextStyle) {
+extension UIFont.TextStyle {
+    fileprivate init(_ textStyle: Font.TextStyle) {
         switch textStyle {
             case .largeTitle:
                 self = .largeTitle
-            case .title1:
-                self = .title
+            case .title:
+                self = .title1
             case .title2:
-                if #available(iOS 14.0, *) {
-                    self = .title2
-                } else {
-                    self = .title
-                }
+                self = .title2
             case .title3:
-                if #available(iOS 14.0, *) {
-                    self = .title3
-                } else {
-                    self = .title
-                }
+                self = .title3
             case .headline:
                 self = .headline
             case .subheadline:
@@ -131,14 +124,10 @@ extension Font.TextStyle {
                 self = .callout
             case .footnote:
                 self = .footnote
-            case .caption1:
-                self = .caption
+            case .caption:
+                self = .caption1
             case .caption2:
-                if #available(iOS 14.0, *) {
-                    self = .caption2
-                } else {
-                    self = .caption
-                }
+                self = .caption2
             default:
                 self = .body
         }

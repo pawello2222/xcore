@@ -6,6 +6,13 @@
 
 import Foundation
 
+extension ValidationRule {
+    /// No validation rule is applied.
+    public static var none: Self {
+        .init { _ in true }
+    }
+}
+
 // MARK: - Input: Collection
 
 extension ValidationRule where Input: Collection {
@@ -25,6 +32,19 @@ extension ValidationRule where Input: Collection {
     /// - Returns: The validation rule.
     public static func range<T: RangeExpression>(_ range: T) -> Self where T.Bound == Int {
         .init { range.contains($0.count) }
+    }
+
+    /// A validation rule that checks whether the input count matches given count.
+    ///
+    /// ```swift
+    /// let accountLastFour = 1234
+    /// accountLastFour.validate(rule: .count(4))
+    /// ```
+    ///
+    /// - Parameter count: The input count.
+    /// - Returns: The validation rule.
+    public static func count(_ count: Int) -> Self {
+        .init { $0.count == count }
     }
 
     /// A validation rule that checks whether the input is not empty.
@@ -138,14 +158,20 @@ extension ValidationRule where Input == String {
             return other.isSuperset(of: input)
         }
     }
+
+    /// A validation rule that checks whether the input equals given set.
+    ///
+    /// - Parameter other: The character set of the input.
+    /// - Returns: The validation rule.
+    public static func equal(_ other: CharacterSet) -> Self {
+        .init { other == CharacterSet(charactersIn: $0) }
+    }
 }
 
 // MARK: - Regex Based Rules
 
 extension ValidationRule where Input == String {
     /// A validation rule that checks whether the input is not blank.
-    ///
-    /// - Returns: The validation rule.
     public static var notBlank: Self {
         .init { !$0.isBlank }
     }
@@ -184,9 +210,51 @@ extension ValidationRule where Input == String {
     }
 
     public static var name: Self {
+        name(range: 1...50)
+    }
+
+    public static func name<T: RangeExpression>(range: T) -> Self where T.Bound == Int {
+        self.range(range) && subset(of: .numbers.inverted)
+    }
+
+    /// A validation rule that checks whether the input is equal to the given
+    /// range.
+    ///
+    /// - Parameter range: The range of the input.
+    /// - Returns: The validation rule.
+    public static func number<T: RangeExpression>(range: T) -> Self where T.Bound == Int {
+        self.range(range) && subset(of: .numbers)
+    }
+
+    /// A validation rule that checks whether the input is equal to the given
+    /// count.
+    ///
+    /// - Parameter count: The input count.
+    /// - Returns: The validation rule.
+    public static func number(count: Int) -> Self {
+        self.count(count) && subset(of: .numbers)
+    }
+}
+
+// MARK: - Data Detector
+
+extension ValidationRule where Input == String {
+    /// A validation rule that checks whether the input is equal to the given
+    /// data detector type.
+    ///
+    /// - Parameter value: The value to compare against input.
+    /// - Returns: The validation rule.
+    public static func isValid(_ type: NSTextCheckingResult.CheckingType) -> Self {
         .init { input in
-            let range = 2...50
-            return range.contains(input.count) && !input.isMatch("[0-9]")
+            guard let detector = try? NSDataDetector(types: type.rawValue) else {
+                return false
+            }
+
+            if let match = detector.firstMatch(in: input, options: [], range: NSRange(location: 0, length: input.count)) {
+                return match.range.length == input.count
+            }
+
+            return false
         }
     }
 }
