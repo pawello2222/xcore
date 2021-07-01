@@ -122,7 +122,7 @@ public struct ProminentDynamicTextFieldStyle: DynamicTextFieldStyle {
                         }
                     }
                     .when(options.contains(.elevated)) {
-                        $0.backgroundColor(theme.backgroundSecondaryColor)
+                        $0.backgroundUIColor(theme.backgroundSecondaryColor)
                     }
                     .cornerRadius(cornerRadius)
                     .when(options.contains(.bordered)) {
