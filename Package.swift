@@ -1,4 +1,4 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.5
 
 import PackageDescription
 
@@ -10,19 +10,14 @@ let package = Package(
         .library(name: "Xcore", targets: ["Xcore"])
     ],
     dependencies: [
-        .package(url: "https://github.com/SDWebImage/SDWebImage", from: "5.9.1")
+        .package(name: "SDWebImage", url: "https://github.com/SDWebImage/SDWebImage.git", from: "5.8.2"),
+        .package(url: "https://github.com/Flight-School/AnyCodable", from: "0.6.1")
     ],
     targets: [
         .target(
             name: "Xcore",
-            dependencies: ["SDWebImage"],
-            path: "Sources",
-            exclude: ["Supporting Files/Info.plist"],
-            resources: [
-                .process("Supporting Files/Assets.xcassets")
-            ]
-        )
+            dependencies: ["SDWebImage", "AnyCodable"]
+        ),
+        .testTarget(name: "XcoreTests", dependencies: ["Xcore"])
     ]
 )
-
-// .testTarget(name: "UnitTests", dependencies: ["Xcore"], path: "UnitTests")

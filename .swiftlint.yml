@@ -1,3 +1,8 @@
+excluded:
+  - Pods
+  - Carthage
+  - .build
+
 disabled_rules:
   - cyclomatic_complexity
   - file_length
@@ -9,13 +14,11 @@ disabled_rules:
   - line_length
   - missing_docs
   - nesting
-  - opening_brace
   - todo
   - type_body_length
   - type_name
   - identifier_name
   - large_tuple
-  - switch_case_alignment
   - unused_optional_binding
   - discarded_notification_center_observer
   - unused_closure_parameter
@@ -25,8 +28,6 @@ disabled_rules:
   - weak_delegate
 opt_in_rules:
   - switch_case_on_newline
-  # - unneeded_parentheses_in_closure_argument
-  # - trailing_closure
   - closure_spacing
   - contains_over_first_not_nil
   - discouraged_object_literal
@@ -34,17 +35,17 @@ opt_in_rules:
   - first_where
   - implicit_return
   - joined_default_parameter
-  # - modifier_order
   - no_extension_access_modifier
   - overridden_super_call
   - redundant_nil_coalescing
   - syntactic_sugar
   - toggle_bool
-excluded:
-  - Pods
-  - Carthage
+
+switch_case_alignment:
+  indented_cases: true
+
 custom_rules:
-  import_xcore:
+  icc_import_xcore:
     name: "Import Xcore"
     regex: "^import Xcore$"
     match_kinds:
@@ -52,7 +53,7 @@ custom_rules:
       - keyword
     message: "Xcore is imported globally. Please remove this import."
 
-  equal_space:
+  icc_equal_space:
     regex: "(?:([ ]{2,}=)|(=[ ]{2,}))"
     message: "Expected only one space before and after ="
     match_kinds:
@@ -71,67 +72,71 @@ custom_rules:
       - string_interpolation_anchor
       - typeidentifier
 
-  comma_space:
+  icc_comma_space:
     regex: ",[ ]{2,}"
     message: "Expected only one space after ',"
 
-  double_space:
+  icc_double_space:
     name: "Double space"
     regex: "([a-z,A-Z] \\s+)"
     message: "Double space between keywords"
     match_kinds: keyword
 
-  comments_space:
+  icc_brackets_space:
+    name: "Extra space"
+    regex: "\\{ \\}"
+    message: "Don't include spaces in empty brackets (e.g, {})."
+
+  icc_comments_space:
     name: "Space After Comment"
     regex: "(^ *//\\w+)"
     message: "There should be a space after //"
-    severity: error
 
-  unnecessary_type:
+  icc_unnecessary_type:
     name: "Unnecessary Type"
     regex: "[ a-zA-Z0-9]*(?:let|var) [ a-zA-Z0-9]*: ([a-zA-Z0-9]*)[\\? ]*= \\1"
     message: "Type definition not needed"
 
-  weak_capture_space:
+  icc_weak_capture_space:
     regex: "\\{\\[weak"
     message: "Expected a space between [{"
 
-  inconsistent_naming_weak_self:
-    name: "Inconsistent Naming"
+  inc_weak_self:
+    name: "Inconsistent Naming Convention"
     regex: "weakSelf"
     message: "Rename `weakSelf` to be `strongSelf` to follow codebase naming convention."
 
-  inconsistent_naming_header_view:
-    name: "Inconsistent Naming"
+  inc_header_view:
+    name: "Inconsistent Naming Convention"
     regex: "(let|var) header = (.*)View"
     message: "Rename `header` to be `headerView` to follow codebase naming convention."
 
-  inconsistent_naming_footer_view:
-    name: "Inconsistent Naming"
+  inc_footer_view:
+    name: "Inconsistent Naming Convention"
     regex: "(let|var) footer = (.*)View"
     message: "Rename `footer` to be `footerView` to follow codebase naming convention."
 
-  inconsistent_naming_if_necessary:
-    name: "Inconsistent Naming"
+  inc_if_necessary:
+    name: "Inconsistent Naming Convention"
     regex: "IfNecessary"
     message: "Rename `IfNecessary` to be `IfNeeded` to follow UIKit and codebase naming convention."
 
-  verbose_naming:
+  icc_verbose_naming:
     name: "Verbose"
     regex: "axis: \\[.horizontal, .vertical\\]"
     message: "Replace `axis: [.horizontal, .vertical]` with `axis: .both` to follow codebase convention."
 
-  override_func:
+  icc_override_func:
     regex: "override (open|public|private|internal|fileprivate)"
     message: "Use open override or public override instead"
 
-  vertical_whitespace_opening_braces:
+  icc_vertical_whitespace_opening_braces:
     included: ".*.swift"
     regex: '[{(\[][ \t]*\n[ \t]*\n'
     name: "Vertical Whitespace after Opening Braces"
     message: "Don't include vertical whitespace (empty line) after opening braces."
 
-  vertical_whitespace_closing_braces:
+  icc_vertical_whitespace_closing_braces:
     included: ".*.swift"
     regex: '\n[ \t]*\n[ \t]*[)}\]]'
     name: "Vertical Whitespace before Closing Braces"
@@ -142,48 +147,66 @@ custom_rules:
     regex: '// MARK: [^-]'
     message: "Add \"-\" after MARK declaration (e.g., // MARK: - Example)."
 
-  inconsistent_naming_parameter_capitalized:
+  inc_parameter_capitalized:
     included: ".*.swift"
     regex: '/// - parameter'
     message: "parameter should be capitalized."
 
-  inconsistent_naming_return_capitalized:
+  inc_return_capitalized:
     included: ".*.swift"
     regex: '/// - returns'
     message: "returns should be capitalized."
 
-  inconsistent_code_convention_action_block:
+  icc_action_block:
     included: ".*.swift"
-    name: "Inconsistent Code Convention"
+    name: "Inconsistent Coding Convention"
     regex: 'addAction\(.touchUpInside\)'
     message: "Use `action { }` instead of `addAction(.touchUpInside)` codebase convention."
 
-  inconsistent_code_convention_omit_return:
+  icc_omit_return:
     included: ".*.swift"
-    name: "Inconsistent Code Convention"
+    name: "Inconsistent Coding Convention"
     regex: '(\{ return #function \}|\{ return propertyName\(\) \})'
     message: "Omit return from single line statement."
 
-  inconsistent_code_convention_omit_type:
+  icc_omit_type:
     included: ".*.swift"
-    name: "Inconsistent Code Convention"
+    name: "Inconsistent Coding Convention"
     regex: '\: ImageAssetIdentifier (\{ #function \}|\{ propertyName\(\) \})'
     message: "Replace ImageAssetIdentifier with Self."
 
-  # braces_space:
-  #   regex: "[^ ]\\{"
-  #   message: "Expected a space before {"
-  #   match_kinds:
-  #     - argument
-  #     - attribute.builtin
-  #     - attribute.id
-  #     - buildconfig.id
-  #     - buildconfig.keyword
-  #     - identifier
-  #     - keyword
-  #     - number
-  #     - objectliteral
-  #     - parameter
-  #     - placeholder
-  #     - string_interpolation_anchor
-  #     - typeidentifier
+  sui_icc_foregroundColor:
+    included: ".*.swift"
+    name: "Inconsistent Coding Convention"
+    regex: "\\.foregroundColor\\(Color\\("
+    message: "Use foregroundColor() directly instead of wrapping in Color."
+
+  sui_icc_env_namespace:
+    included: ".*.swift"
+    name: "Inconsistent Coding Convention"
+    regex: \@SwiftUI.Environment\(\\.[A-Za-z0-9_]*\)\s
+    message: "Remove SwiftUI namespace (e.g., `@SwiftUI.Environment → @Environment`)."
+
+  sui_icc_env_private:
+    included: ".*.swift"
+    name: "Inconsistent Coding Convention"
+    regex: \@Environment\(\\.[A-Za-z0-9_]*\)(\svar\s[A-Za-z0-9_:]*)
+    message: "Make environment variable private (e.g., `@Environment(\\.theme) private var theme`)."
+
+  sui_icc_env_type:
+    included: ".*.swift"
+    name: "Inconsistent Coding Convention"
+    regex: "\\@(Environment|SwiftUI.Environment)\\(\\\\.theme\\) private var theme: Theme"
+    message: "Remove type from the right hand of the environment variable (e.g., `@Environment(\\.theme) private var theme`)."
+
+  icc_button_closure:
+    included: ".*.swift"
+    name: "Inconsistent Coding Convention"
+    regex: "Button\\(action\\: \\{"
+    message: "Please use the trailing closure syntax (e.g., `Button {} label: {}`)."
+
+  icc_file_header:
+    included: ".*.swift"
+    name: "Inconsistent Coding Convention"
+    regex: "// File.swift"
+    message: "Please update the file name."

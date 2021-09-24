@@ -27,6 +27,22 @@ struct Menu: Identifiable {
                 .eraseToAnyView()
         }
     }
+
+    init<Content: View>(
+        id: UUID = UUID(),
+        title: String,
+        subtitle: String? = nil,
+        @ViewBuilder content: @escaping () -> Content
+    ) {
+        self.id = id
+        self.title = title
+        self.subtitle = subtitle
+        self.content = {
+            content()
+                .navigationTitle(title)
+                .eraseToAnyView()
+        }
+    }
 }
 
 // MARK: - CaseIterable
@@ -36,6 +52,10 @@ extension Menu: CaseIterable {
         separators,
         buttonsUIKit,
         buttons,
+        capsules,
+        popups,
+        textFields,
+        activitySheet,
         labelInset
     ]
 }
@@ -43,24 +63,62 @@ extension Menu: CaseIterable {
 // MARK: - Items
 
 extension Menu {
-    static let separators = Self(
+    private static let separators = Self(
         title: "Separators",
+        subtitle: "UIKit",
         content: SeparatorViewController().embedInView()
     )
 
-    static let buttonsUIKit = Self(
+    private static let buttonsUIKit = Self(
         title: "Buttons",
         subtitle: "UIKit",
         content: ButtonsViewController().embedInView()
     )
 
-    static let buttons = Self(
+    private static let buttons = Self(
         title: "Buttons",
-        subtitle: "SwiftUI",
         content: ButtonsView()
     )
 
-    static let labelInset = Self(
+    private static let capsules = Self(
+        title: "Capsule",
+        content: {
+            if #available(iOS 15.0, *) {
+                Samples.capsuleViewPreviews
+            } else {
+                EmptyView()
+            }
+        }
+    )
+
+    private static let popups = Self(
+        title: "Popups",
+        content: {
+            if #available(iOS 15.0, *) {
+                Samples.popupPreviews
+            } else {
+                EmptyView()
+            }
+        }
+    )
+
+    private static let textFields = Self(
+        title: "TextFields",
+        content: {
+            if #available(iOS 15.0, *) {
+                Samples.dynamicTextFieldPreviews
+            } else {
+                EmptyView()
+            }
+        }
+    )
+
+    private static let activitySheet = Self(
+        title: "Activity Sheet",
+        content: ActivitySheetView()
+    )
+
+    private static let labelInset = Self(
         title: "Label Inset",
         subtitle: "Label extension to enable \"contentInset\".",
         content: ExampleLabelInsetViewController().embedInView()
